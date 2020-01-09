@@ -73,16 +73,16 @@ SELECT  email, average_visit_date
     (SELECT * , date_dif/2 as average_visit_date
        FROM
 		(SELECT * , 
-			(AVG(nth_second_most_ - nth_first_most_)
+			(AVG(nth_second_most_date - nth_first_most_date)
 				Over(PARTITION BY user_id) ) AS date_dif
 					FROM
 					(SELECT *, 
 						NTH_VALUE(visit_date, 2) 
 							OVER(PARTITION BY user_id ORDER BY user_id, days
-								RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS nth_second_most_ ,
+								RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS nth_second_most_date ,
 						NTH_VALUE(visit_date, 1) 
 							OVER(PARTITION BY user_id ORDER BY user_id,days
-								RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS nth_first_most_
+								RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ) AS nth_first_most_date
                                 FROM
 									(SELECT * ,
 										COUNT(user_id)
@@ -91,6 +91,9 @@ SELECT  email, average_visit_date
 		FROM CTE_main_ )  AS Q1 ) as Q2 ) AS Q3) AS Q4 WHERE count_ >= 2 AND email LIKE '%@gmail.com%'
           Group by user_id, date_dif
         -- or use Right((email,10) to get @gmail.com assumig good data quality 
+
+
+
 
 
 
