@@ -1,6 +1,6 @@
 -- Final Complete
 
-
+-- QUESTION 1
 SELECT u1.id FROM user AS u1, user AS u2  -- Calling same column again using aliasing and 
 WHERE u1.password = u2.password -- matching for exact match
 AND u1.id != u2.id; -- to ensure that we don't get the same id
@@ -15,7 +15,7 @@ SELECT id FROM user WHERE password in (
 );
 
 
-
+-- QUESTION 2
 
 
 -- use of max function to get the max date out of group by results so that 
@@ -29,8 +29,9 @@ SELECT email FROM
 WHERE max_date < '2000-01-31';
 
 
+-- THERE ARE TWO SOLUTION OF QUESTIONS 3
 
--- QUESTION 3 SLUTION WITHOUT CTE
+-- QUESTION 3 SOLUTION WITHOUT CTE
 
 SELECT   email, average_visit_date from
     (SELECT * , date_dif/2 as average_visit_date -- AVERAGE OF DATES
@@ -52,7 +53,7 @@ SELECT   email, average_visit_date from
 											OVER(PARTITION BY user_id) AS count_
 		FROM 
 			(SELECT user.* , user_id, visit_date, RIGHT(visit_date,2) AS days
-				  FROM user JOIN visit_ ON user.id = visit_.id) as Q1
+				  FROM user JOIN visit ON user.id = visit.id) as Q1
                   )  AS FINAL ) as final_) as final_f) as final_ff WHERE count_ >= 2 AND email LIKE '%@gmail.com%'
 		 Group by user_id, date_dif;
          -- avoids duplication ( similarly we could have used distinct email)
@@ -61,12 +62,12 @@ SELECT   email, average_visit_date from
         
         
 
--- QUESTION 3 SLUTION WITH CTE
+-- QUESTION 3 SOLUTION WITH CTE
 
 
 
 WITH CTE_main_ AS (SELECT user.* , user_id, visit_date, RIGHT(visit_date,2) AS days
-				  FROM user JOIN visit_ ON user.id = visit_.id)
+				  FROM user JOIN visit ON user.id = visit.id)
 SELECT  email, average_visit_date
 	FROM
     (SELECT * , date_dif/2 as average_visit_date
